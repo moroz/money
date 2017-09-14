@@ -26,7 +26,7 @@ module Money
 
     def self.fetch_conversion_rates_for(code)
       raise ArgumentError.new("code is not a valid ISO 4217 currency code") unless code.is_a?(String) && code.length == 3
-      api_response = self.class.get('/latest', query: { base: code.upcase })
+      api_response = self.get('/latest', query: { base: code.upcase })
 
       if api_response.success?
         Currency.new(api_response['base'], api_response['rates'])
@@ -34,7 +34,10 @@ module Money
         error_message = JSON.parse(api_response.parsed_response['error'])
         raise RuntimeError.new("Fetching currency data failed with response code #{api_response.response.code}: #{error_message}")
       end
+    end
 
+    def ==(other)
+      self.code == other.code && self.rates == other.rates
     end
 
     private

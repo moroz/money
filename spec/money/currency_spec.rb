@@ -54,4 +54,36 @@ RSpec.describe Money::Currency do
       end
     end
   end
+
+  describe "self.fetch_conversion_rates_for" do
+
+    # valid => String with the length of 3
+    context "called with valid currency code" do
+      let(:fetched_currency) { Currency.fetch_conversion_rates_for('USD') }
+
+      it "sends GET request to fixer.io API" do
+
+      end
+
+      it "returns an instance of Currency" do
+        expect(fetched_currency).to be_instance_of(Currency)
+      end
+
+      it "returned object's currency code is correct" do
+        expect(fetched_currency.code).to eq('USD')
+      end
+
+      it "is case-insensitive" do
+        expect(Currency.fetch_conversion_rates_for('uSd')).to eq(fetched_currency)
+      end
+    end
+
+    context "called with a Symbol param" do
+      it "raises ArgumentError" do
+        expect { Currency.fetch_conversion_rates_for(:usd) }
+      end
+
+      it "does not send HTTP request"
+    end
+  end
 end
