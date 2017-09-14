@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = %q{A simple gem to perform currency conversion and arithmetics.}
   spec.description   = %q{This is a simple, two-class gem to perform currency conversion and arithmetics using different currencies. It was written in response to a coding challenge as a part of the recruitment process at Dievision, a German media agency specializing in Web design and full stack development. It uses the Fixer.io to fetch currency exchange rates and is unit-tested using RSpec and Webmock.}
-  spec.homepage      = "n/a"
+  spec.homepage      = ""
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0").reject do |f|
