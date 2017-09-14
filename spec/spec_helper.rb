@@ -1,5 +1,6 @@
 require "bundler/setup"
 require "money"
+require 'currency_helper'
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
@@ -10,4 +11,7 @@ RSpec.configure do |config|
   config.expect_with :rspec do |c|
     c.syntax = :expect
   end
+
+  include CurrencyHelper
+  include Money
 end
