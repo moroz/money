@@ -1,4 +1,4 @@
-require 'currency'
+require 'money/currency'
 require 'bigdecimal'
 
 module Money
