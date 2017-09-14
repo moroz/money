@@ -14,5 +14,13 @@ module Money
     def to_s
       
     end
+
+    def +(other)
+
+    end
+
+    def <=>(other)
+      
+    end
   end
 end
