@@ -28,8 +28,11 @@ module Money
       raise ArgumentError.new("code is not a valid ISO 4217 currency code") unless code.is_a?(String) && code.length == 3
       api_response = self.get('/latest', query: { base: code.upcase })
 
+      # When stubbing responses with WebMock, HTTParty returns unparsed JSON string
       if api_response.success?
-        Currency.new(api_response['base'], api_response['rates'])
+        body = api_response.parsed_response
+        body = JSON.parse(body) if body.is_a?(String)
+        Currency.new(body['base'], body['rates'])
       else
         error_message = JSON.parse(api_response.parsed_response['error'])
         raise RuntimeError.new("Fetching currency data failed with response code #{api_response.response.code}: #{error_message}")

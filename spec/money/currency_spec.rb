@@ -46,13 +46,20 @@ RSpec.describe Money::Currency do
   end
 
   describe "self.fetch_conversion_rates_for" do
+    before do
+      stub_request(:get, /api\.fixer\.io/).to_return({
+        status: 200,
+        body: json_string(json_file('usd'))
+      })
+    end
 
     # valid => String with the length of 3
     context "called with valid currency code" do
       let(:fetched_currency) { Currency.fetch_conversion_rates_for('USD') }
 
       it "sends GET request to fixer.io API" do
-
+        fetched_currency
+        expect(WebMock).to have_requested(:get, /api\.fixer\.io/).once
       end
 
       it "returns an instance of Currency" do
@@ -70,10 +77,16 @@ RSpec.describe Money::Currency do
 
     context "called with a Symbol param" do
       it "raises ArgumentError" do
-        expect { Currency.fetch_conversion_rates_for(:usd) }
+        expect { Currency.fetch_conversion_rates_for(:usd) }.to raise_exception(ArgumentError)
       end
 
-      it "does not send HTTP request"
+      it "does not send HTTP request" do
+        begin
+          Currency.fetch_conversion_rates_for(:usd)
+        rescue ArgumentError
+        end
+        expect(WebMock).not_to have_requested(:get, /api\.fixer\.io/)
+      end
     end
   end
 end

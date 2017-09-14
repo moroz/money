@@ -1,9 +1,21 @@
 module CurrencyHelper
+  def json_string(filename)
+    File.read(filename)
+  end
+
+  def json_file(currency)
+    File.join(File.dirname(__FILE__), '/fixtures/' + currency.to_s.downcase + '_response.json')
+  end
+
+  def rates_for(currency)
+    JSON.parse(json_string(json_file(currency)))['rates']
+  end
+
   def eur_rates
-    {'USD' => 1.1885, 'RUB' => 68.648, 'CNY' => 7.7918, 'PHP' => 60.99}
+    rates_for('eur')
   end
 
   def usd_rates
-    {'EUR' => 0.8414, 'RUB' => 57.76, 'CNY' => 6.556, 'PHP' => 51.317}
+    rates_for('usd')
   end
 end

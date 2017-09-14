@@ -1,6 +1,7 @@
 require "bundler/setup"
 require "money"
 require 'currency_helper'
+require 'webmock/rspec'
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
@@ -14,4 +15,5 @@ RSpec.configure do |config|
 
   include CurrencyHelper
   include Money
+  WebMock.disable_net_connect!
 end
