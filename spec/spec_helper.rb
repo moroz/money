@@ -14,6 +14,5 @@ RSpec.configure do |config|
   end
 
   include CurrencyHelper
-  include Money
   WebMock.disable_net_connect!
 end

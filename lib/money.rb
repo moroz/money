@@ -1,7 +1,25 @@
 require "money/version"
-require 'money/currency'
-require 'money/money'
+require 'currency'
+require 'bigdecimal'
 
-module Money
-  # Your code goes here...
+class Money
+  attr_reader :amount, :currency
+
+  # Takes amount which is anything that can be converted to BigDecimal
+  # and a Currency object
+  def initialize(amount, currency)
+
+  end
+
+  def to_s
+
+  end
+
+  def +(other)
+
+  end
+
+  def <=>(other)
+
+  end
 end

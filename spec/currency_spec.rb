@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe Money::Currency do
+RSpec.describe Currency do
   let(:currency) { Currency.new('EUR', eur_rates) } 
 
   describe "initialization" do
