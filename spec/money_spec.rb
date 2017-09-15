@@ -55,6 +55,12 @@ RSpec.describe Money::Money do
   describe "conversions" do
     let(:fifty_usd) { Money.new(50, usd) }
 
+    describe "#to_s" do
+      it "returns amount w/fractional part & currency code" do
+        expect(fifty_usd.to_s).to eq("50.00 USD")
+      end
+    end
+
     describe '#convert_to' do
       context "when given Currency object" do
         context "when the other Currency is same as own" do
