@@ -47,7 +47,7 @@ RSpec.describe Money::Currency do
 
   describe "self.fetch_conversion_rates_for" do
     before do
-      stub_request(:get, /api\.fixer\.io/).to_return({
+      stub_request(:get, 'https://api.fixer.io/latest?base=USD').to_return({
         status: 200,
         body: json_string(json_file('usd'))
       })

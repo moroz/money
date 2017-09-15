@@ -1,33 +1,45 @@
 require 'spec_helper'
 
 RSpec.describe Money::Money do
+  let(:usd) { Currency.fetch_conversion_rates_for('USD') }
+  let(:eur) { Currency.fetch_conversion_rates_for('EUR') }
+
+  before do
+    stub_request(:get, 'https://api.fixer.io/latest?base=EUR').to_return({
+      status: 200,
+      body: json_string(json_file('eur'))
+    })
+  end
 
   describe "initialization" do
+    let(:twenty_eur) { Money.new(20, eur) }
     context "when given valid params" do
-      it "initializes a Money object"
+      it "initializes a Money object" do
+        expect(twenty_eur).to be_instance_of(Money)
+      end
     end
 
     context "when given empty string as amount" do
       it "raises ArgumentError" do
-
+        expect { Money.new('', eur) }.to raise_exception ArgumentError
       end
     end
 
     context "when given nil as amount" do
       it "raises ArgumentError" do
-
+        expect { Money.new(nil, eur) }.to raise_exception ArgumentError
       end
     end
 
     context "when given nil as currency" do
       it "raises ArgumentError" do
-
+        expect { Money.new(20, nil) }.to raise_exception ArgumentError
       end
     end
 
     context "when given string as currency" do
       it "raises ArgumentError" do
-
+        expect { Money.new(20, 'EUR') }.to raise_exception ArgumentError
       end
     end
   end
