@@ -223,11 +223,11 @@ RSpec.describe Money do
 
       describe "with a number" do
         before(:each) do
-          @result = twenty_eur * 3
+          @result = twenty_eur * 3.5
         end
 
         it "calculates amount correctly" do
-          expect(@result.amount).to eq(60)
+          expect(@result.amount).to eq(70)
         end
 
         it "returns instance of Money" do
@@ -240,7 +240,7 @@ RSpec.describe Money do
       end
     end
 
-    describe "division" do
+    describe "diEvision" do
       context "with wrong param" do
         context "when called with another instance of Money" do
           it "raises TypeError" do
@@ -262,7 +262,13 @@ RSpec.describe Money do
         end
       end
 
-      describe "with a number" do
+      describe "division by zero" do
+        it "raises ZeroDivisionError" do
+          expect { twenty_eur / 0 }.to raise_exception(ZeroDivisionError)
+        end
+      end
+
+      describe "with a non-zero real number" do
         before(:each) do
           @result = twenty_eur / 2
         end

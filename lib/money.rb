@@ -1,6 +1,21 @@
 require "money/version"
 require 'currency'
-require 'bigdecimal'
+
+# Money
+# A simple class to perform monetary conversions and operations.
+# It has to be used together with the Currency class.
+#
+# Initialization:
+# Money.new(20, <Currency object>)
+# For information on how to initialize Currency objects,
+# please refer to the Currency class source code.
+#
+# The arithmetic operators + - * / work as expected,
+# + and - taking other Money values of the same or other currency,
+# * and / accepting any real number.
+#
+# Comparison operators <=> < <= == != >= > work as expected,
+# with the precision of 2 digits after the point.
 
 class Money
   attr_reader :amount, :currency
@@ -22,8 +37,18 @@ class Money
     sprintf("%.2f %s", amount, currency_code)
   end
 
+  def inspect
+    "Money: #{to_s}"
+  end
+
   def currency_code
     currency.code
+  end
+
+  def <=>(other)
+    return unless other.instance_of?(Money)
+    converted = other.convert_to(self.currency)
+    self.amount <=> converted.amount
   end
 
   def +(addend)
@@ -41,14 +66,15 @@ class Money
   end
 
   def *(factor)
-    raise TypeError unless factor.kind_of?(Numeric)
-    factor = BigDecimal(factor)
+    raise TypeError unless factor.kind_of?(Numeric) && !factor.is_a?(Complex)
+    factor = BigDecimal.new(factor, 0)
     Money.new(amount * factor, currency)
   end
 
   def /(divisor)
-    raise TypeError unless divisor.kind_of?(Numeric)
-    divisor = BigDecimal(divisor)
+    raise TypeError unless divisor.kind_of?(Numeric) && !divisor.is_a?(Complex)
+    raise ZeroDivisionError if divisor == 0
+    divisor = BigDecimal.new(divisor, 0)
     Money.new(amount / divisor, currency)
   end
 
@@ -57,11 +83,5 @@ class Money
     return self if new_currency == self.currency
     rate = self.currency.rates[new_currency.code]
     Money.new((amount * rate).round(2), new_currency)
-  end
-
-  def <=>(other)
-    return unless other.instance_of?(Money)
-    converted = other.convert_to(self.currency)
-    self.amount <=> converted.amount
   end
 end
