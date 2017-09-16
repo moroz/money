@@ -26,8 +26,30 @@ class Money
     currency.code
   end
 
-  def +(other)
+  def +(addend)
+    raise TypeError unless addend.instance_of?(Money)
+    converted = addend.convert_to(currency)
+    sum = amount + converted.amount
+    Money.new(sum, currency)
+  end
 
+  def -(subtrahend)
+    raise TypeError unless subtrahend.instance_of?(Money)
+    converted = subtrahend.convert_to(currency)
+    difference = amount - converted.amount
+    Money.new(difference, currency)
+  end
+
+  def *(factor)
+    raise TypeError unless factor.kind_of?(Numeric)
+    factor = BigDecimal(factor)
+    Money.new(amount * factor, currency)
+  end
+
+  def /(divisor)
+    raise TypeError unless divisor.kind_of?(Numeric)
+    divisor = BigDecimal(divisor)
+    Money.new(amount / divisor, currency)
   end
 
   def convert_to(new_currency)

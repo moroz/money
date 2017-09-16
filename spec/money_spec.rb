@@ -1,6 +1,6 @@
 require "spec_helper"
 
-RSpec.describe Money::Money do
+RSpec.describe Money do
   it "has a version number" do
     expect(Money::VERSION).not_to be nil
   end
@@ -126,5 +126,159 @@ RSpec.describe Money::Money do
       end
     end
   end
-end
 
+  describe "arithmetics" do
+    let(:twenty_eur) { Money.new(20, eur) }
+
+    describe "addition" do
+      context "when called with anything but an instance of Money" do
+        it "raises TypeError" do
+          expect { twenty_eur + 20 }.to raise_exception(TypeError)
+        end
+      end
+
+      context "when called with instance of Money" do
+        context "of the same currency" do
+          it "calculates amount correctly" do
+            thirty_eur = Money.new(30, eur)
+            sum = twenty_eur + thirty_eur
+            expect(sum.amount).to eq(50)
+          end
+        end
+
+        context "of other currency" do
+          let(:thirty_usd) { Money.new(30, usd) }
+
+          before(:each) do
+            @sum = twenty_eur + thirty_usd
+          end
+
+          it "calculates amount correctly" do
+            expect(@sum.amount).to eq(BigDecimal.new(45.24, 4))
+          end
+
+          it "result is in left operand's currency" do
+            expect(@sum.currency_code).to eq('EUR')
+          end
+        end
+      end
+    end
+
+    describe "subtraction" do
+      context "when called with anything but an instance of Money" do
+        it "raises TypeError" do
+          expect { twenty_eur - 20 }.to raise_exception(TypeError)
+        end
+      end
+
+      context "when called with instance of Money" do
+        context "of the same currency" do
+          it "calculates amount correctly" do
+            five_eur = Money.new(5, eur)
+            difference = twenty_eur - five_eur
+            expect(difference.amount).to eq(15)
+          end
+        end
+
+        context "of other currency" do
+          let(:ten_usd) { Money.new(10, usd) }
+
+          before(:each) do
+            @result = twenty_eur - ten_usd
+          end
+
+          # USD-EUR: 0.8414
+          it "calculates amount correctly" do
+            expect(@result.amount).to eq(11.59)
+          end
+
+          it "result is in left operand's currency" do
+            expect(@result.currency_code).to eq('EUR')
+          end
+        end
+      end
+    end
+
+    describe "multiplication" do
+      describe "with wrong param" do
+        context "when called with another instance of Money" do
+          it "raises TypeError" do
+            other = Money.new(3, usd)
+            expect { twenty_eur * other }.to raise_exception(TypeError)
+          end
+        end
+
+        context "when called with nil" do
+          it "raises TypeError" do
+            expect { twenty_eur * nil }.to raise_exception(TypeError)
+          end
+        end
+
+        context "when called with a string" do
+          it "raises TypeError" do
+            expect { twenty_eur * 'foobar' }.to raise_exception(TypeError)
+          end
+        end
+      end
+
+      describe "with a number" do
+        before(:each) do
+          @result = twenty_eur * 3
+        end
+
+        it "calculates amount correctly" do
+          expect(@result.amount).to eq(60)
+        end
+
+        it "returns instance of Money" do
+          expect(@result).to be_instance_of(Money)
+        end
+
+        it "result has the same currency" do
+          expect(@result.currency_code).to eq('EUR')
+        end
+      end
+    end
+
+    describe "division" do
+      context "with wrong param" do
+        context "when called with another instance of Money" do
+          it "raises TypeError" do
+            other = Money.new(3, usd)
+            expect { twenty_eur / other }.to raise_exception(TypeError)
+          end
+        end
+
+        context "when called with nil" do
+          it "raises TypeError" do
+            expect { twenty_eur / nil }.to raise_exception(TypeError)
+          end
+        end
+
+        context "when called with a string" do
+          it "raises TypeError" do
+            expect { twenty_eur / 'foobar' }.to raise_exception(TypeError)
+          end
+        end
+      end
+
+      describe "with a number" do
+        before(:each) do
+          @result = twenty_eur / 2
+        end
+
+        it "calculates amount correctly" do
+          expect(@result.amount).to eq(10)
+        end
+
+        it "returns instance of Money" do
+          expect(@result).to be_instance_of(Money)
+        end
+
+        it "result has the same currency" do
+          expect(@result.currency_code).to eq('EUR')
+        end
+      end
+    end
+  end
+end
