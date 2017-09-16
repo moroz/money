@@ -8,10 +8,6 @@ RSpec.describe Currency do
       it "returns an instance of Currency" do
         expect(currency).to be_instance_of(Currency)
       end
-
-      it "does not raise an exception" do
-        expect { Currency.new('EUR', eur_rates) }.not_to raise_exception
-      end
     end
 
     context "with code being a Symbol" do
