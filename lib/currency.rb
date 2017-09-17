@@ -33,7 +33,7 @@ class Currency
       body = JSON.parse(body) if body.is_a?(String)
       Currency.new(body['base'], body['rates'])
     else
-      error_message = JSON.parse(api_response.parsed_response['error'])
+      error_message = api_response.parsed_response['error']
       raise RuntimeError.new("Fetching currency data failed with response code #{api_response.response.code}: #{error_message}")
     end
   end
